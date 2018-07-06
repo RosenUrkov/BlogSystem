@@ -1,12 +1,7 @@
-/* globals __dirname */
-const port = 1234;
+const config = require('./config');
 
-const path = require('path');
-
-const express = require('express');
-const app = express();
-
-app.use(express.static(path.join(__dirname, '../BlogSystem.Client/dist/BlogSystem')));
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../BlogSystem.Client/dist/BlogSystem/index.html')));
-
-app.listen(port, () => console.log(`Server running on port ${port}..`));
+Promise.resolve()
+    .then(() => require('./database')(config.DB_CONNECTION_STRING, config.DB_NAME))
+    .then((database) => require('./data')(database))
+    .then((data) => require('./app')(data))
+    .then((app) => app.listen(config.PORT, () => console.log(`Server running on port ${config.PORT}..`)));
